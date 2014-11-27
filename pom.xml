@@ -76,6 +76,12 @@
 		    <type>jar</type>
 		    <scope>compile</scope>
 		</dependency>
+
+            <dependency>
+                <groupId>org.apache.thrift</groupId>
+                <artifactId>libthrift</artifactId>
+                <version>0.9.1</version>
+            </dependency>
 		
 		<dependency>
 			<groupId>javax.mail</groupId>
@@ -109,9 +115,9 @@
 			<version>2.12.4</version>
 		</dependency>
             <dependency>
-                <groupId>me.prettyprint</groupId>
+                <groupId>org.hectorclient</groupId>
                 <artifactId>hector-core</artifactId>
-                <version>1.0-5</version>
+                <version>2.0-0</version>
             </dependency>
 
         <!--<dependency>-->
@@ -171,19 +177,7 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
-        
-<!--        
-		<dependency>
-			<groupId>tencent</groupId>
-			<artifactId>QWeibo</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>sina</groupId>
-			<artifactId>weibo4j</artifactId>
-			<version>20110610</version>
-		</dependency>
--->        
+
         
 		<dependency>
 			<groupId>joda-time</groupId>
