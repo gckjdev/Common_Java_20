@@ -87,18 +87,19 @@ public abstract class CommonApiServer extends AbstractHandler
         // preformance setttings, refer to http://wiki.eclipse.org/Jetty/Howto/High_Load
         // http://wiki.eclipse.org/Jetty/Howto/Garbage_Collection
 
-		Server server = new Server(getPort());
+		Server server = new Server();
 
 //		for (Connector connector : server.getConnectors()) {
 //			connector.setRequestHeaderSize(1024 * 30);
 //		}
-		server.setHandler(getHandler());
 
-        QueuedThreadPool threadPool = (QueuedThreadPool)server.getThreadPool();
-        threadPool.setQueue(new ArrayBlockingQueue<Runnable>(6000));
-        threadPool.setMaxThreads(200);
-        threadPool.setMinThreads(25);
-        threadPool.setDetailedDump(false);
+        ServerConnector http = new ServerConnector(server);
+        http.setPort(getPort());
+        http.setIdleTimeout(30000);
+        http.setAcceptQueueSize(6000);
+
+        server.setConnectors(new Connector[]{ http });
+		server.setHandler(getHandler());
 
         server.setStopAtShutdown(true);
         server.start();
