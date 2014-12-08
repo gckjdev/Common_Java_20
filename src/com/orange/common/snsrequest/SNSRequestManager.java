@@ -76,14 +76,14 @@ public class SNSRequestManager {
 		String secret = null;
 		switch (snsRequestType) {
 //		case SNSRequest.REQUEST_Type_QQ_WEIBO:
-//			key = manager.getQQWeiboConsumerKey();
-//			secret = manager.getQQWeiboConsumerSecret();
+//			key = model.getQQWeiboConsumerKey();
+//			secret = model.getQQWeiboConsumerSecret();
 //			if (!checkConsumerToken(key, secret))
 //				return null;
 //			return new QQWeiboSNS(key, secret);
 //		case SNSRequest.REQUEST_Type_SINA_WEIBO:
-//			key = manager.getSinaWeiboConsumerKey();
-//			secret = manager.getSinaWeiboConsumerSecret();
+//			key = model.getSinaWeiboConsumerKey();
+//			secret = model.getSinaWeiboConsumerSecret();
 //			if (!checkConsumerToken(key, secret))
 //				return null;
 //			return new SinaWeiboSNS(key, secret);
@@ -97,14 +97,14 @@ public class SNSRequestManager {
 		String secret = null;
 		switch (snsRequestType) {
 //		case SNSRequest.REQUEST_Type_QQ_WEIBO:
-//			key = manager.getQQWeiboConsumerKey();
-//			secret = manager.getQQWeiboConsumerSecret();
+//			key = model.getQQWeiboConsumerKey();
+//			secret = model.getQQWeiboConsumerSecret();
 //			if (!checkConsumerToken(key, secret))
 //				return null;
 //			return new QQWeiboSNS(key, secret);
 //		case SNSRequest.REQUEST_Type_SINA_WEIBO:
-//			key = manager.getSinaWeiboConsumerKey();
-//			secret = manager.getSinaWeiboConsumerSecret();
+//			key = model.getSinaWeiboConsumerKey();
+//			secret = model.getSinaWeiboConsumerSecret();
 //			if (!checkConsumerToken(key, secret))
 //				return null;
 //			return new SinaWeiboSNS(key, secret);

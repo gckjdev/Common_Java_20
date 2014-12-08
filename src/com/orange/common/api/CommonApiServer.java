@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.util.thread.ThreadPool;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.orange.common.api.service.ServiceHandler;
@@ -59,7 +61,6 @@ public abstract class CommonApiServer extends AbstractHandler
 		}
 	}
 	
-    @Override
     public void handle(String target,
                        Request baseRequest,
                        HttpServletRequest request,
@@ -80,14 +81,21 @@ public abstract class CommonApiServer extends AbstractHandler
 	public void startServer() throws Exception {
     	//init the spring context
 		String[] springFiles = new String[] { getSpringContextFile() };
-    	initSpringContext(springFiles);    	
+    	initSpringContext(springFiles);
     	
 		log.info(getAppNameVersion());
 
         // preformance setttings, refer to http://wiki.eclipse.org/Jetty/Howto/High_Load
         // http://wiki.eclipse.org/Jetty/Howto/Garbage_Collection
 
-		Server server = new Server();
+        // create thread pool
+        QueuedThreadPool pool = new QueuedThreadPool();
+        pool.setMaxThreads(300);
+        pool.setMinThreads(20);
+        pool.setIdleTimeout(60000);
+        pool.setDetailedDump(false);
+
+		Server server = new Server(pool);
 
 //		for (Connector connector : server.getConnectors()) {
 //			connector.setRequestHeaderSize(1024 * 30);
@@ -96,9 +104,8 @@ public abstract class CommonApiServer extends AbstractHandler
         ServerConnector http = new ServerConnector(server);
         http.setPort(getPort());
         http.setIdleTimeout(30000);
-        http.setAcceptQueueSize(6000);
 
-        server.setConnectors(new Connector[]{ http });
+        server.addConnector(http);
 		server.setHandler(getHandler());
 
         server.setStopAtShutdown(true);
