@@ -51,8 +51,8 @@ public class CassandraClient {
     private CassandraClient() {
         String address = PropertyUtil.getStringProperty("cassandra.address", "127.0.0.1");
         String port = PropertyUtil.getStringProperty("cassandra.port", "9160");
-        String clusterName = PropertyUtil.getStringProperty("cassandra.cluster", "game_cluster");
-        String keyspace = PropertyUtil.getStringProperty("cassandra.keyspace", "game");
+        String clusterName = PropertyUtil.getStringProperty("cassandra.cluster", "barrage_cluster");
+        String keyspace = PropertyUtil.getStringProperty("cassandra.keyspace", "barrage");
 
         initServer(address+":"+port, clusterName);
         initKeyspace(keyspace);
