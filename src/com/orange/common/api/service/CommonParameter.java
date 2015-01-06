@@ -18,6 +18,8 @@ public class CommonParameter {
 	public static final String TEXT_HTML = "text/html; charset=utf-8";
 	
 	public static final String APPLICATION_JSON = "application/json; charset=utf-8";
+    public static final String APPLICATION_PB = "application/x-protobuf; charset=utf-8";
+
 	public static final int LANGUAGE_CHINESE = 1;
 	public static final int LANGUAGE_UNKNOW = 0;
 	

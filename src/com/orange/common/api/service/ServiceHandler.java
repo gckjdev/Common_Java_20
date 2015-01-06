@@ -153,6 +153,9 @@ public class ServiceHandler {
 		}
 
 		if (format.equals(CommonParameter.PROTOCOL_BUFFER)){
+
+            obj.resultType = CommonParameter.APPLICATION_PB;
+
 			byte[] responseData = obj.getResponseByteData();
 			String responseType = obj.resultType;
 
@@ -208,6 +211,8 @@ public class ServiceHandler {
     private static final String CONTENT_ENCODING = "Content-Encoding";
     private static final String CONTENT_ENCODING_GZIP = "gzip";
     private static final String CONTENT_TYPE_TEXT_PLAIN_UTF8 = "text/plain; charset=utf-8";
+    private static final String CONTENT_TYPE_PB = "application/x-protobuf";
+
 //    private static final String GENERIC_FAILURE_MSG = "The call failed on the server; see server log for details";
 	
     void sendResponse(HttpServletResponse response, byte[] responseData, String responseType, boolean gzip) {
