@@ -1,6 +1,8 @@
 package com.orange.common.elasticsearch;
 
 import com.orange.common.log.ServerLog;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Client;
@@ -8,6 +10,7 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.script.ScriptService;
 
 import java.io.IOException;
 import java.util.Map;
@@ -26,6 +29,7 @@ public class ESIndexBuilder {
      * @param indexType  　 索引类型，通常用索引的表名作为类型
      * @return
      */
+    /*
     public static IndexResponse indexByMongodbRiver(String dbName, String collection, String indexName, String indexType) {
 
         Client client = ESService.getInstance().getClient();
@@ -79,6 +83,7 @@ public class ESIndexBuilder {
 
         return response;
     }
+    */
 
     /**
      * 不使用mongodb-river插件索引，而是手工索引，
@@ -100,13 +105,7 @@ public class ESIndexBuilder {
         }
 
         // ServerLog.info(0, "<createIndexInES> json = "+jsonDoc+", indexName = "+indexName+", indexType = "+indexType+", id = "+id);
-
-        IndexResponse response = client.prepareIndex(indexName, indexType, id)
-                .setSource(jsonDoc)
-                .execute()
-                .actionGet();
-
-
+        IndexResponse response = client.prepareIndex(indexName, indexType, id).setSource(jsonDoc).execute().actionGet();
         if (!response.getIndex().equals(indexName)) {
             ServerLog.warn(0, "response.getIndex = " + response.getIndex() + ", indexName = " + indexName);
             return false;
@@ -125,8 +124,8 @@ public class ESIndexBuilder {
             return false;
         }
 
-        boolean ret = client.prepareDelete(indexName, indexType, id).execute().actionGet().isNotFound();
-        if (!ret) {
+        boolean ret = client.prepareDelete(indexName, indexType, id).execute().actionGet().isFound();
+        if (ret) {
             ServerLog.warn(0, "record not found! , fails to delete!");
         }
         return ret;
@@ -157,11 +156,11 @@ public class ESIndexBuilder {
         }
 
         UpdateResponse response = client.prepareUpdate(indexName, indexType, id)
-                .setScript("ctx._source." + updateField + "=\"" + updateValue + "\"")
+                .setScript("ctx._source." + updateField + "=\"" + updateValue + "\"", ScriptService.ScriptType.INLINE)
                 .execute()
                 .actionGet();
 
-        Map<String, Object> sourceMap = response.getResult().sourceAsMap();
+        Map<String, Object> sourceMap = response.getGetResult().sourceAsMap();
         if (sourceMap == null || sourceMap.isEmpty()) {
             ServerLog.warn(0, "No this doc " + id + " to be updated ?!");
             return false;
@@ -176,11 +175,11 @@ public class ESIndexBuilder {
     }
 
     public static void main(String[] args) {
-        IndexResponse indexResponse = ESIndexBuilder.indexByMongodbRiver("game", "user", "mongoindex", null);
-        if (indexResponse == null) {
-            ServerLog.info(0, "Index mongodb fails");
-            return;
-        }
-        ServerLog.info(0, "indexResponse.name = " + indexResponse.index() + ", type = " + indexResponse.type());
+//        IndexResponse indexResponse = ESIndexBuilder.indexByMongodbRiver("game", "user", "mongoindex", null);
+//        if (indexResponse == null) {
+//            ServerLog.info(0, "Index mongodb fails");
+//            return;
+//        }
+//        ServerLog.info(0, "indexResponse.name = " + indexResponse.index() + ", type = " + indexResponse.type());
     }
 }

@@ -17,7 +17,7 @@ public class ESService {
     public static String CHINESE_ANALYZER = "ik"; // ElasticSearch中文分词插件: ik
 
     private static ESService ourInstance = new ESService();
-    private Logger log = Logger.getLogger(ESService.class.getName());
+    private static final Logger log = Logger.getLogger(ESService.class.getName());
     private final Client client;
 
     public static ESService getInstance() {

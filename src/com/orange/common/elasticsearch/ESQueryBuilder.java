@@ -135,7 +135,8 @@ public class ESQueryBuilder {
         if (filterKey != null && filterValue != null) {
             ServerLog.info(0, "<searchByQueryString> filter = {" + filterKey + " : " + filterValue + "}");
             TermFilterBuilder filter = FilterBuilders.termFilter(filterKey, filterValue);
-            temp.setFilter(filter);
+//            temp.setFilter(filter);
+            temp.setPostFilter(filter);
         }
 
         SearchResponse searchResponse = temp.setFrom(start).setSize(offset).setExplain(true)
@@ -217,7 +218,7 @@ public class ESQueryBuilder {
         int start1 = 0;
         int offset1 = 100;
         SearchResponse searchResponse = searchByField(indexName, fieldToSearch, matchText, start1, offset1);
-        SearchHits hits = searchResponse.hits();
+        SearchHits hits = searchResponse.getHits(); // hits();
         long totalHits1 = hits.getTotalHits();
         if (hits.getTotalHits() != 0) {
             long count = start1 + offset1 < totalHits1 ? start1 + offset1 : totalHits1;
@@ -236,7 +237,6 @@ public class ESQueryBuilder {
         // 降序比较器，按搜索得分从高到低排列
         Map<Float, Map<String, Object>> scoreResult = new TreeMap<Float, Map<String, Object>>(
                 new Comparator<Float>() {
-                    @Override
                     public int compare(Float f1, Float f2) {
                         // Don't do like this :   return (int)(f2-f1),
                         // because cast into int will loss precision. That said, 0.xxx will end up being 0.
@@ -250,13 +250,13 @@ public class ESQueryBuilder {
                 });
         MultiSearchResponse msr = searchByMultiMatch(indexName, candidateFields, textVal, start2, offset2);
         // 把每一个字段的查找结果，按“得分”和“user ID“键值对放入TreeMap中（使其按得分从高到低排列）
-        for (MultiSearchResponse.Item item : msr.responses()) {
-            SearchResponse response = item.response();
-            long totalHits2 = response.hits().totalHits();
+        for (MultiSearchResponse.Item item : msr.getResponses()){ // responses()) {
+            SearchResponse response = item.getResponse();
+            long totalHits2 = response.getHits().totalHits();
             if (totalHits2 != 0) {
                 long count = start2 + offset2 < totalHits2 ? start2 + offset2 : totalHits2;
                 for (int i = start2; i < count; i++) {
-                    SearchHit searchHit = response.hits().getAt(i);
+                    SearchHit searchHit = response.getHits().getAt(i);
                     float score = searchHit.getScore();
                     Map<String, Object> source = searchHit.getSource();
                     scoreResult.put(score, source);
@@ -287,13 +287,13 @@ public class ESQueryBuilder {
         SearchResponse sr3 = searchByQueryString(indexName, candidateFields, textVal3, start3, offset3);
         ServerLog.info(0, sr3.toString());
         if (sr3 != null) {
-            long totalHits = sr3.hits().totalHits();
+            long totalHits = sr3.getHits().totalHits();
             if (totalHits != 0) {
                 ServerLog.info(0, "totalHits = " + totalHits);
                 long count3 = start3 + offset3 < totalHits ? start3 + offset3
                         : totalHits;
                 for (int i = start3; i < count3; i++) {
-                    SearchHit searchHits = sr3.hits().getAt(i);
+                    SearchHit searchHits = sr3.getHits().getAt(i);
                     sourceList3.add(searchHits.getSource());
                 }
             }

@@ -1,6 +1,6 @@
 package com.orange.common.log;
 
-import org.apache.log4j.Logger;
+import org.apache.log4j.*;
 
 public class ServerLog {
 		

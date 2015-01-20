@@ -92,8 +92,7 @@ public class RedisClient {
 	
 	public boolean zadd(final String key, final double score, final String member){
 		Object result = (Boolean)execute(new RedisCallable<Boolean>() {
-			@Override
-			public Boolean call(Jedis jedis) {				
+			public Boolean call(Jedis jedis) {
 				if (key == null || member == null){
 					log.error("<RedisClient> ADD but key or member is null");
 					return Boolean.FALSE;
@@ -112,7 +111,6 @@ public class RedisClient {
 
     public boolean zinc(final String key, final double increment, final String member) {
         Object result = (Boolean)execute(new RedisCallable<Boolean>() {
-            @Override
             public Boolean call(Jedis jedis) {
                 if (key == null || member == null){
                     log.error("<RedisClient> ADD but key or member is null");
@@ -135,7 +133,6 @@ public class RedisClient {
     public Set<String> zbelowScore(final String key, final double score) {
             Object retList = RedisClient.getInstance().execute(new RedisCallable<Set<String>>() {
 
-                    @Override
                     public Set<String> call(Jedis jedis) {
                             
                             Set<String> set = jedis.zrangeByScore(key, Double.MIN_VALUE, score, 0, Integer.MAX_VALUE);
@@ -160,7 +157,6 @@ public class RedisClient {
 	public Set<String> ztop(final String key, final int offset, final int limit) {
 		Object retList = RedisClient.getInstance().execute(new RedisCallable<Set<String>>() {
 
-			@Override
 			public Set<String> call(Jedis jedis) {
 				
 				Set<String> set = jedis.zrevrangeByScore(key, Double.MAX_VALUE, -Double.MIN_VALUE, offset, limit);
@@ -183,8 +179,7 @@ public class RedisClient {
 
 	public boolean zrem(final String key, final String member) {
 		Object result = (Boolean)execute(new RedisCallable<Boolean>() {
-			@Override
-			public Boolean call(Jedis jedis) {				
+			public Boolean call(Jedis jedis) {
 				if (key == null || member == null){
 					log.error("<RedisClient> REMOVE but key or member is null");
 					return Boolean.FALSE;
@@ -204,8 +199,7 @@ public class RedisClient {
 	// delete data after TOP N
 	public boolean zdeletebelowtop(final String key, final int maxTopCount){
 		Object result = (Boolean)execute(new RedisCallable<Boolean>() {
-			@Override
-			public Boolean call(Jedis jedis) {				
+			public Boolean call(Jedis jedis) {
 				Long removeCount = jedis.zremrangeByRank(key, 0, -maxTopCount);
 				log.info("<RedisClient> "+removeCount+" DELETED @"+key);
 				return Boolean.TRUE;
@@ -220,8 +214,7 @@ public class RedisClient {
 	
 	public int ztopcount(final String key) {
 		Object result = (Object)execute(new RedisCallable<Long>() {
-			@Override
-			public Long call(Jedis jedis) {				
+			public Long call(Jedis jedis) {
 				Long count = jedis.zcount(key, Double.MIN_VALUE, Double.MAX_VALUE);
 				log.info("<RedisClient> "+count+" COUNT @"+key);
 				return count;
@@ -236,7 +229,6 @@ public class RedisClient {
 
     public int zcountbelow(final String key, final double score) {
         Object result = (Object)execute(new RedisCallable<Long>() {
-            @Override
             public Long call(Jedis jedis) {
                 Long count = jedis.zcount(key, Double.MIN_VALUE, score);
                 log.info("<RedisClient> "+count+" COUNT @"+key);
@@ -252,7 +244,6 @@ public class RedisClient {
 
     public int zrevrank(final String key, final String member) {
         Object result = (Object)execute(new RedisCallable<Long>() {
-            @Override
             public Long call(Jedis jedis) {
                 Long rank = jedis.zrevrank(key, member);
                 log.info("<RedisClient> rank = "+rank+" ZREVRANK @"+key);
@@ -268,7 +259,6 @@ public class RedisClient {
 
     public int zrank(final String key, final String member) {
         Object result = (Object)execute(new RedisCallable<Long>() {
-            @Override
             public Long call(Jedis jedis) {
                 Long rank = jedis.zrank(key, member);
                 log.info("<RedisClient> rank = "+rank+" ZRANK @"+key);
@@ -284,7 +274,6 @@ public class RedisClient {
 
     public boolean hset(final String key, final String field, final String value){
         Object result = (Boolean)execute(new RedisCallable<Boolean>() {
-            @Override
             public Boolean call(Jedis jedis) {
                 if (key == null || field == null || value == null){
                     log.error("<RedisClient> HSET but key or field or value is null");
@@ -305,7 +294,6 @@ public class RedisClient {
 
     public String hget(final String key, final String field) {
         String result = (String)execute(new RedisCallable<String>() {
-            @Override
             public String call(Jedis jedis) {
                 if (key == null || field == null){
                     log.error("<RedisClient> HGET but key or field is null");
@@ -324,7 +312,6 @@ public class RedisClient {
 
     public int hinc(final String key, final String field, final int increment) {
         Object result = (Object)execute(new RedisCallable<Long>() {
-            @Override
             public Long call(Jedis jedis) {
             Long val = jedis.hincrBy(key, field, increment);
             log.info("<RedisClient> field = "+field+ " incby "+increment+" HINC @"+key);
@@ -340,7 +327,6 @@ public class RedisClient {
 
     public boolean sismember(final String key, final String member) {
         Object result = (Object)execute(new RedisCallable<Boolean>() {
-            @Override
             public Boolean call(Jedis jedis) {
                 Boolean result = jedis.sismember(key, member);
                 log.info("<RedisClient> field = "+member+ " SISMEMBER @"+key+", result="+result);
@@ -358,7 +344,6 @@ public class RedisClient {
     public double zscore(final String key, final String member){
 
         Double result = (Double) execute(new RedisCallable<Double>() {
-            @Override
             public Double call(Jedis jedis) {
                 return jedis.zscore(key, member);
             }
@@ -373,7 +358,6 @@ public class RedisClient {
 
     public boolean zismember(final String key, final String member) {
         Object result = (Object)execute(new RedisCallable<Boolean>() {
-            @Override
             public Boolean call(Jedis jedis) {
                 Object result = jedis.zscore(key, member);
                 if(result == null){
@@ -394,7 +378,6 @@ public class RedisClient {
 
     public boolean sadd(final String key, final String member) {
         Object result = (Boolean)execute(new RedisCallable<Boolean>() {
-            @Override
             public Boolean call(Jedis jedis) {
                 if (key == null || member == null){
                     log.error("<RedisClient> SADD but key or member is null");
@@ -414,7 +397,7 @@ public class RedisClient {
 
     public boolean del(final String key) {
         Object result = (Boolean)execute(new RedisCallable<Boolean>() {
-            @Override
+
             public Boolean call(Jedis jedis) {
             if (key == null){
                 log.error("<RedisClient> DEL but key is null");
@@ -452,7 +435,7 @@ public class RedisClient {
 
 		execute(new RedisCallable() {
 
-			@Override
+
 			public Object call(Jedis jedis) {
 				return null;
 			}
@@ -470,7 +453,7 @@ public class RedisClient {
         // clean useless data
         RedisClient.getInstance().execute(new RedisCallable<Boolean>() {
 
-            @Override
+
             public Boolean call(Jedis jedis) {
                 Long removeCount = jedis.zremrangeByScore(key, minScore, maxScore);
                 log.info("<RedisClient> "+removeCount+" CLEANED @"+key);
@@ -485,12 +468,10 @@ public class RedisClient {
 
         ScheduleService.getInstance().scheduleEverySecond(interval, new Runnable() {
 
-            @Override
             public void run() {
                 // clean useless data
                 RedisClient.getInstance().execute(new RedisCallable<Boolean>() {
 
-                    @Override
                     public Boolean call(Jedis jedis) {
                         Long removeCount = jedis.zremrangeByRank(key, 0, -maxCount);
                         log.info("<RedisClient> "+removeCount+" CLEANED @"+key);
@@ -530,12 +511,10 @@ public class RedisClient {
 
         ScheduleService.getInstance().scheduleEverySecond(interval, new Runnable() {
 
-            @Override
             public void run() {
                 // clean useless data
                 RedisClient.getInstance().execute(new RedisCallable<Boolean>() {
 
-                    @Override
                     public Boolean call(Jedis jedis) {
 
                         Long count = jedis.llen(key);

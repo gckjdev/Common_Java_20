@@ -94,7 +94,6 @@ public class ScheduleService {
         }
 
         scheduleEveryday(0, 0, 0, new Runnable() {
-            @Override
             public void run() {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(new Date());

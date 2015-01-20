@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.bson.types.ObjectId;
-import org.eclipse.jetty.util.log.Log;
 
 public class DateUtil {
 
@@ -211,7 +210,7 @@ public class DateUtil {
 
         ObjectId objId = new ObjectId(objectIdString);
         Date date = DateUtil.dateFromString(dateString);
-        if (objId.getTime() >= date.getTime()){
+        if (objId.getTimestamp() >= date.getTime()){
             return true;
         }
         else{

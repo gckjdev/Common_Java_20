@@ -29,7 +29,6 @@ public class SNSRequestConsumer implements Runnable {
 		return true;
 	}
 
-	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		while (true) {
