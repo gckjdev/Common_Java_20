@@ -452,7 +452,12 @@ public class MongoDBClient {
                 }
             }
         }
-        log.info("<findInArray> query=" + query.toString() + ", returnFields=" + field.toString());
+
+        if (limit == Integer.MAX_VALUE || limit <= 0){
+            field = new BasicDBObject();        // no slice in array
+        }
+
+        log.info("<findInArray> "+tableName+" query=" + query.toString() + ", slices=" + field.toString());
         return collection.findOne(query, field);
     }
 
