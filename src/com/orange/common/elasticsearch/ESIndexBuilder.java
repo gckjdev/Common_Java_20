@@ -94,39 +94,39 @@ public class ESIndexBuilder {
      * @param id        每个被索引的文档的独一的ID(以确保更新操作能针对这个文档而不是另新增一个)
      * @return
      */
-    public static boolean indexByRawAPI(String jsonDoc, String indexName, String indexType, String id) {
+    public static boolean createIndex(String jsonDoc, String indexName, String indexType, String id) {
 
-        ServerLog.info(0, "<indexByRawApi> indexName = " + indexName + ", indexType = " + indexType + ", id = " + id);
+        ServerLog.info(0, "<createIndex> index = " + indexName + ", name = " + indexType + ", id = " + id);
         Client client = ESService.getInstance().getClient();
 
         if (jsonDoc == null || indexName == null || indexType == null || id == null) {
-            ServerLog.warn(0, "Imcomplete arguments , fails to index!");
+            ServerLog.warn(0, "<createIndex> invalid arguments , fails to index!");
             return false;
         }
 
         // ServerLog.info(0, "<createIndexInES> json = "+jsonDoc+", indexName = "+indexName+", indexType = "+indexType+", id = "+id);
         IndexResponse response = client.prepareIndex(indexName, indexType, id).setSource(jsonDoc).execute().actionGet();
         if (!response.getIndex().equals(indexName)) {
-            ServerLog.warn(0, "response.getIndex = " + response.getIndex() + ", indexName = " + indexName);
+            ServerLog.warn(0, "<createIndex> response failure, response.getIndex = " + response.getIndex() + ", indexName = " + indexName);
             return false;
         } else {
-            ServerLog.info(0, "<indexByRawAPI> create index. index type = " + indexType);
         }
         return true;
     }
 
-    public static boolean deleteByRawAPI(String indexName, String indexType, String id) {
+    public static boolean deleteIndex(String indexName, String indexType, String id) {
 
         Client client = ESService.getInstance().getClient();
 
         if (indexName == null || indexType == null || id == null) {
-            ServerLog.warn(0, "Imcomplete arguments , fails to delete!");
+            ServerLog.warn(0, "<deleteIndex> invalid arguments , fails to delete!");
             return false;
         }
 
+        ServerLog.info(0, "<deleteIndex> index="+indexName+", type="+indexType+", id="+id);
         boolean ret = client.prepareDelete(indexName, indexType, id).execute().actionGet().isFound();
         if (ret) {
-            ServerLog.warn(0, "record not found! , fails to delete!");
+            ServerLog.warn(0, "<deleteIndex> failure, index="+indexName+", type="+indexType+", id="+id);
         }
         return ret;
     }
@@ -147,14 +147,15 @@ public class ESIndexBuilder {
         Client client = ESService.getInstance().getClient();
 
         if (updateField == null || updateValue == null || id == null) {
-            ServerLog.warn(0, "Nothing to be updated!");
+            ServerLog.warn(0, "<updateIndex> Nothing to be updated!");
             return false;
         }
         if (indexName == null || indexType == null) {
-            ServerLog.warn(0, "Imcomplete arguments, failed to update index !");
+            ServerLog.warn(0, "<updateIndex> invalid arguments, failed to update index !");
             return false;
         }
 
+        ServerLog.info(0, "<updateIndex> index="+indexName+", type="+indexType+", field="+updateField+"value="+updateValue + ", id=" + id + "");
         UpdateResponse response = client.prepareUpdate(indexName, indexType, id)
                 .setScript("ctx._source." + updateField + "=\"" + updateValue + "\"", ScriptService.ScriptType.INLINE)
                 .execute()
@@ -162,12 +163,12 @@ public class ESIndexBuilder {
 
         Map<String, Object> sourceMap = response.getGetResult().sourceAsMap();
         if (sourceMap == null || sourceMap.isEmpty()) {
-            ServerLog.warn(0, "No this doc " + id + " to be updated ?!");
+            ServerLog.warn(0, "<updateIndex> but document not found for " + id + "");
             return false;
         }
 
         if (sourceMap.get(updateField) != updateValue) {
-            ServerLog.warn(0, "Update fails");
+            ServerLog.warn(0, "<updateIndex> update failure for " + id + "");
             return false;
         }
 

@@ -1,5 +1,6 @@
 package com.orange.common.elasticsearch;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,6 +15,7 @@ public interface ESORMable {
     public String getESIndexType();
     public String getESIndexName();
     public String getID();
+    public List<String> fieldsForIndex();
     public boolean hasFieldForSearch();
     public boolean canBeIndexed();
 }

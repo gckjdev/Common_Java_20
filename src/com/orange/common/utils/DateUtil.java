@@ -83,7 +83,11 @@ public class DateUtil {
 		Date date = new Date();
 		return date.getTime();
 	}
-	
+
+    public static int getCurrentSeconds() {
+        return (int)(System.currentTimeMillis()/1000);
+    }
+
 	public static Date getDateOfToday(){
 
 		TimeZone timeZone = TimeZone.getTimeZone("GMT+0800");
