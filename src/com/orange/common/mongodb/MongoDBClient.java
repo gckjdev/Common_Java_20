@@ -453,9 +453,9 @@ public class MongoDBClient {
             }
         }
 
-        if (limit == Integer.MAX_VALUE || limit <= 0){
-            field = new BasicDBObject();        // no slice in array
-        }
+//        if (limit == Integer.MAX_VALUE || limit <= 0){
+//            field = new BasicDBObject();        // no slice in array
+//        }
 
         log.info("<findInArray> "+tableName+" query=" + query.toString() + ", slices=" + field.toString());
         return collection.findOne(query, field);

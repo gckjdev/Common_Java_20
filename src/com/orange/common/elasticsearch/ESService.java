@@ -14,7 +14,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
  */
 public class ESService {
 
-    public static String CHINESE_ANALYZER = "ik"; // ElasticSearch中文分词插件: ik
+    public static String CHINESE_ANALYZER = "ik"; // ElasticSearch中文分词插件: ik , you can use standard either;
 
     private static final Logger log = Logger.getLogger(ESService.class.getName());
     private final Client client;
