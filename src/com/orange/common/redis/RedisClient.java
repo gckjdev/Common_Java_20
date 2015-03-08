@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.orange.common.scheduler.ScheduleService;
 import com.orange.common.utils.PropertyUtil;
+import com.orange.common.utils.StringUtil;
 import org.apache.log4j.Logger;
 
 import redis.clients.jedis.*;
@@ -32,8 +33,7 @@ public class RedisClient {
 		}
 
         int port = PropertyUtil.getIntProperty("redis.port", 6379);
-
-		log.info("Create redis client pool on address "+address);
+        String password = PropertyUtil.getStringProperty("redis.password", null);
 
         JedisPoolConfig poolConfig = new JedisPoolConfig();
         poolConfig.setMaxTotal(128);
@@ -46,7 +46,13 @@ public class RedisClient {
         poolConfig.setTimeBetweenEvictionRunsMillis(60*1000);
 
         int timeout = 30*1000;
-		pool = new JedisPool(poolConfig, address, port, timeout);
+        log.info("Create redis client pool on address "+address);
+        if (StringUtil.isEmpty(password)) {
+            pool = new JedisPool(poolConfig, address, port, timeout);
+        }
+        else{
+            pool = new JedisPool(poolConfig, address, port, timeout, password);
+        }
 	}
 
 	public static RedisClient getInstance(){

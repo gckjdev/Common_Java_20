@@ -71,6 +71,8 @@ public class ServiceHandler {
 			method = request.getParameter(CommonParameter.METHOD_SECURE);
 		}
 
+        log.info("<handle> debug 1");
+
         boolean isJsonCallback = false;
         String jsonCallbackString = null;
 		String format = request.getParameter(CommonParameter.FORMAT);
@@ -81,9 +83,13 @@ public class ServiceHandler {
             isJsonCallback = true;
             jsonCallbackString = request.getParameter(CommonParameter.PARA_JSONP_CALLBACK);
         }
-		
+
+        log.info("<handle> debug 2");
+
 		CommonService obj = null;
 		obj = serviceFactory.createServiceObjectByMethod(method);
+
+        log.info("<handle> debug 3");
 
 		try {
 
@@ -93,6 +99,8 @@ public class ServiceHandler {
 				return;
 			}
 
+            log.info("<handle> debug 4");
+
 			obj.setSecureMethod(isSecureMethod);
 			obj.setCassandraClient(cassandraClient);
 			obj.setMongoClient(mongoClient);
@@ -101,11 +109,15 @@ public class ServiceHandler {
 			obj.setDataFormat(format);
             obj.setJsonpCallback(jsonCallbackString);
 
+            log.info("<handle> debug 5");
+
 			if (!obj.validateSecurity(request)) {
 				sendResponseByErrorCode(obj, response,
 						CommonErrorCode.ERROR_INVALID_SECURITY, gzip, format);
 				return;
 			}
+
+            log.info("<handle> debug 6");
 
             /* rem black user and device for Barrage
 			// common black user handling here, hard code for quick implementation
