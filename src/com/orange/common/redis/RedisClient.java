@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -22,18 +23,21 @@ public class RedisClient {
     static Logger log = Logger.getLogger(RedisClient.class.getName());
 	JedisPool pool = null; 	
 	static RedisClient defaultClient = new RedisClient();
-	
-//	final private ScheduledExecutorService scheduleService = Executors.newScheduledThreadPool(1);
-	
-	private RedisClient(){
-		
-		String address = System.getProperty("redis.address");
-		if (address == null) {
-			address = "127.0.0.1";
-		}
 
-        int port = PropertyUtil.getIntProperty("redis.port", 6379);
-        String password = PropertyUtil.getStringProperty("redis.password", null);
+    final static ConcurrentHashMap<String, RedisClient> clientMap = new ConcurrentHashMap<String, RedisClient>();
+    final static Object clientMapKey = new Object();
+
+    String redisAddress;
+    int redisPort;
+    String redisPassword;
+
+//	final private ScheduledExecutorService scheduleService = Executors.newScheduledThreadPool(1);
+
+    public void initRedisClient(String address, int port, String password){
+
+        this.redisAddress = address;
+        this.redisPassword = password;
+        this.redisPort = port;
 
         JedisPoolConfig poolConfig = new JedisPoolConfig();
         poolConfig.setMaxTotal(128);
@@ -53,7 +57,59 @@ public class RedisClient {
         else{
             pool = new JedisPool(poolConfig, address, port, timeout, password);
         }
+    }
+
+    private RedisClient(String address, int port, String password) {
+        initRedisClient(address, port, password);
+    }
+
+	private RedisClient(){
+		
+		String address = System.getProperty("redis.address");
+		if (address == null) {
+			address = "127.0.0.1";
+		}
+
+        int port = PropertyUtil.getIntProperty("redis.port", 6379);
+        String password = PropertyUtil.getStringProperty("redis.password", null);
+
+        initRedisClient(address, port, password);
+//        JedisPoolConfig poolConfig = new JedisPoolConfig();
+//        poolConfig.setMaxTotal(128);
+//        poolConfig.setMaxIdle(10);
+//        poolConfig.setMinIdle(5);
+//        poolConfig.setMaxWaitMillis(1000);
+//        poolConfig.setTestOnBorrow(false);
+//        poolConfig.setTestOnReturn(false);
+//        poolConfig.setTestWhileIdle(true);
+//        poolConfig.setTimeBetweenEvictionRunsMillis(60*1000);
+//
+//        int timeout = 30*1000;
+//        log.info("Create redis client pool on address "+address);
+//        if (StringUtil.isEmpty(password)) {
+//            pool = new JedisPool(poolConfig, address, port, timeout);
+//        }
+//        else{
+//            pool = new JedisPool(poolConfig, address, port, timeout, password);
+//        }
 	}
+
+    public static RedisClient getInstance(String server, int port, String password){
+        synchronized (clientMapKey) {
+            String key = getKey(server, port);
+            if (clientMap.containsKey(key)) {
+                return clientMap.get(key);
+            } else {
+                RedisClient client = new RedisClient(server, port, password);
+                clientMap.put(key, client);
+                return client;
+            }
+        }
+    }
+
+    private static String getKey(String server, int port){
+        return String.format("%s-%d", server, port);
+    }
 
 	public static RedisClient getInstance(){
 		return defaultClient;

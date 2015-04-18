@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
@@ -277,5 +278,49 @@ public class StringUtil {
 
     public static String getEmptyStringWhenNull(String string) {
         return (string == null) ? "" : string;
+    }
+
+    static String CHINESE_CODES = "[\u4e00-\u9fa5]";
+    static String TIBET_CODES = "[\u0f00-\u0fff]";
+
+    public static void testChinese(){
+        System.out.println("isContainsChinese "+isContainsChinese("你好"));
+        System.out.println("isContainsChinese "+isContainsChinese("ABC"));
+        System.out.println("isContainsChinese "+isContainsChinese("人"));
+        System.out.println("isContainsChinese "+isContainsChinese("好ABCD"));
+
+        System.out.println("isContainsChinese "+isContainsChinese("ༀ"));
+        System.out.println("isContainsChinese "+isContainsChinese("ག"));
+
+        System.out.println("isContainsTibet "+isContainsTibet("好ༀགགགabc"));
+        System.out.println("isContainsTibet "+isContainsTibet("ག"));
+        System.out.println("isContainsTibet "+isContainsTibet("ABC"));
+        System.out.println("isContainsTibet "+isContainsTibet("你好"));
+        System.out.println("isContainsTibet "+isContainsTibet("abc"));
+        System.out.println("isContainsTibet "+isContainsTibet("1234"));
+    }
+
+    public static boolean isContainsChinese(String str){
+        return isContainsCharacterSet(str, CHINESE_CODES);
+    }
+
+    public static boolean isContainsTibet(String str){
+        return isContainsCharacterSet(str, TIBET_CODES);
+    }
+
+    public static boolean isContainsCharacterSet(String str, String regEx){
+        Pattern pat = Pattern.compile(regEx);
+
+        Matcher matcher = pat.matcher(str);
+        boolean flg = false;
+        int count = 0;
+        while (matcher.find()) {
+            flg = true;
+            for (int i = 0; i <= matcher.groupCount(); i++) {
+                count = count + 1;
+            }
+        }
+//        System.out.println("共有 " + count + "个 ");
+        return flg;
     }
 }
